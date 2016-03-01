@@ -8,7 +8,7 @@ public class Ele {
         this.next = null;
     }
 
-    public int getValue(){
+    public int getValue() {
         return this.value;
     }
 
@@ -16,15 +16,15 @@ public class Ele {
         this.next = e;
     }
 
-    public void updatePrev(Ele e){
+    public void updatePrev(Ele e) {
         this.prev = e;
     }
 
-    public Ele getPrevElement(){
+    public Ele getPrevElement() {
         return prev;
     }
 
-    public Ele getNextElement(){
+    public Ele getNextElement() {
         return next;
     }
 }
