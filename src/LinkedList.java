@@ -1,20 +1,24 @@
-public class LinkedList {
+import java.util.NoSuchElementException;
+
+public class LinkedList<T> implements Iterator {
     private int length;
-    private Ele tail;
-    private Ele head;
+    private Element tail;
+    private Element head;
+    private int iteratorLength;
 
     public LinkedList() {
         this.head = null;
         this.tail = null;
         this.length = 0;
+        this.iteratorLength = 0;
     }
 
-    public void add(int number) {
-        Ele e = new Ele(number);
+    public void add(T value) {
+        Element e = new Element(value);
         if (length == 0) {
             head = tail = e;
         } else {
-            Ele holder = tail;
+            Element holder = tail;
             tail.updateNext(e);
             tail = e;
             tail.updatePrev(holder);
@@ -26,48 +30,63 @@ public class LinkedList {
         return length;
     }
 
-    public Ele getHead() {
+    public Element getHead() {
         return head;
     }
 
-    public Ele getTail() {
+    public Element getTail() {
         return tail;
     }
 
-    public int searchElementAt(int index) {
-        Ele e = this.getHead();
-        int c = 0;
-        for (int i = 0; i < this.getLength(); i++) {
-            if (c == index) {
-                return e.getValue();
+    public Element searchElementAt(int index) {
+        if (index < this.length) {
+            Element e = this.getHead();
+            int c = 0;
+            for (int i = 0; i < this.getLength(); i++) {
+                if (c == index) {
+                    return e;
+                }
+                c++;
+                e = e.getNextElement();
             }
-            c++;
-            e = e.getNextElement();
         }
-        return 0;
+        throw new NoSuchElementException("Not Found");
     }
 
-    public void remove(int value) {
-        Ele e = this.getHead();
-        for (int i = 0; i < this.getLength(); i++) {
-            if (value == e.getValue()) {
-                if (i == 0) {
-                    Ele next = e.getNextElement();
-                    next.updatePrev(null);
-                    this.head = next;
-                } else if (i == length - 1) {
-                    Ele prev = e.getPrevElement();
-                    prev.updateNext(null);
-                    this.tail = prev;
-                } else {
-                    Ele prev = e.getPrevElement();
-                    Ele next = e.getNextElement();
-                    prev.updateNext(next);
-                    next.updatePrev(prev);
-                }
-                this.length--;
-            }
-            e = e.getNextElement();
+
+    @Override
+    public boolean hasNext() {
+        this.iteratorLength++;
+        return this.iteratorLength < this.length;
+    }
+
+
+    @Override
+    public Element next() {
+        return this.searchElementAt(iteratorLength);
+    }
+
+    @Override
+    public void remove() {
+        Element e = this.next();
+        if (iteratorLength == 0) {
+            Element next = e.getNextElement();
+            next.updatePrev(null);
+            this.head = next;
+        }  else if (iteratorLength == length - 1) {
+            Element prev = e.getPrevElement();
+            prev.updateNext(null);
+            this.tail = prev;
+        } else {
+            Element prev = e.getPrevElement();
+            Element next = e.getNextElement();
+            prev.updateNext(next);
+            next.updatePrev(prev);
         }
+        this.length--;
+    }
+
+    public Iterator Iterator() {
+        return this;
     }
 }
